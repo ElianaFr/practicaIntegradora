@@ -1,0 +1,30 @@
+<h1 class="titPage">
+    REAL TIME PRODUCTS
+</h1>
+
+<h1 class="titForm">CARGAR PRODUCTOS</h1>
+
+<div class="containerForm">
+    <div class="containerSon">
+        <form id="createProdForm">
+            <input type="text" placeholder="Nombre del producto" name="title" / >
+            <input type="text" placeholder="Descripcion" name="description" />
+            <input type="text"placeholder="Precio" name="price" />
+            <input type="text"placeholder="Codigo" name="code" />
+            <input type="text"placeholder="Disponibilidad" name="stock" />
+            <input type="text"placeholder="URL de la imagen" name="thumbnail" />
+            
+        {{!-- <input type="file" placeholder="Enlace de la imagen" name="thumbnail" style=" font-size: 20px; margin-bottom: 10px;"/> --}}
+            <button class="buttonForm" >ALTA PRODUCTO</button>
+        </form>
+    </div>
+</div>
+    
+<h3 class="titReal"> Listado de productos </h3>
+
+<div id="productList" class="prodList"></div>
+
+
+{{!-- script para websocket lado cliente// para que sea en todo el proyecto se pone en el main --}}
+<script src="socket.io/socket.io.js"></script>
+<script src="/js/realTimeProducts.js"></script>
