@@ -59,7 +59,7 @@ export class ProductManagerMongo{
             // este metodo si no encuentra el id tiene undefined como resultado
             // se hace una condicion si arroja ese resultado
             // el tercer parametro va a mostrar la lista de prod actualizada
-            const product = await this.model.findByIdAndUpdate(id,updateInfo);
+            const product = await this.model.findByIdAndUpdate(id,updateInfo,{new:true});
             if(!product){
                 throw new Error("No se encontro el producto")    
             }
