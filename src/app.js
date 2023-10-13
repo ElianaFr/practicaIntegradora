@@ -1,6 +1,6 @@
 import express from "express";
 import { productsRouter } from "./routes/products.routes.js";
-// import { cartsRouter } from "./routes/carts.routes.js";
+import { cartsRouter } from "./routes/carts.routes.js";
 import { viewsRouter } from "./routes/views.routes.js";
 import { __dirname } from "./utils.js";
 import path from "path";
@@ -35,9 +35,9 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.static("public"));
 
 // routes
-// app.use(viewsRouter);
+app.use(viewsRouter);
 app.use("/api/products",productsRouter);
-// app.use("/api/carts",cartsRouter);
+app.use("/api/carts",cartsRouter);
 
 // socket server 
 
