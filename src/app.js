@@ -22,6 +22,8 @@ const io = new Server(httpServer);
 // conectamos la base de datos mongoose
 connectDB();
 
+
+
 // configuracion handlebars
 app.engine('.hbs', engine({extname: '.hbs'}));
 app.set('view engine', '.hbs');

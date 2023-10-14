@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 // definimos donde guardamos los productos
 const cartsCollection = "carts";
 
+
 const cartSchema = new mongoose.Schema({
     products:{
         type:[{
@@ -13,8 +14,9 @@ const cartSchema = new mongoose.Schema({
             quantity:{
                 type:Number,
                 require:true,
+            },
+            _id:false
             }
-        }
         ],
     default:[]
     }   

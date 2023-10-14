@@ -12,9 +12,9 @@ export class CartManagerMongo{
             return result;
         } catch (error) {
             // por consola
-            console.log("addProduct",error.message);
+            console.log("createCart",error.message);
             // para el usuario
-            throw new Error("Imposible crear el producto");
+            throw new Error("Imposible crear el carrito");
         }
     };
     async getCart(){
@@ -68,7 +68,6 @@ export class CartManagerMongo{
         try {
             const cart = await this.model.findById(cartId);
             const prodExist = cart.products.find((prod)=>prod.productId._id == productId);
-            
             if(prodExist){
                 const newProducts= cart.products.filter(prod=> prod.productId._id != productId);
                 cart.products= newProducts;
@@ -84,5 +83,41 @@ export class CartManagerMongo{
             throw new Error("Imposible encontrar el carrito");
         }
     };
+    async deleteProdCart(cartId){
+        try {
+            const cart = await this.model.findById(cartId);
+            if (cart.products.length > 0){
+                const newProducts= [];
+                cart.products= newProducts;
+                const result = await this.model.findByIdAndUpdate(cartId,cart,{new:true});
+                return result;
+            }else{
+                throw new Error ("Carrito vacio");    
+            };
+        }
+        catch (error) {
+            // por consola
+            console.log("deleteProduct",error.message);
+            // para el usuario
+            throw new Error("Imposible encontrar el carrito");
+        }
+    };
+    async updateProdCart (cartId,productId,newQuantity){
+        try {
+            const cart = await this.model.findById(cartId);
+            const productIndex =  cart.products.findIndex(e=>e.productId == productId);
+            if (productIndex >= 0){
+                cart.products[productIndex].quantity = newQuantity;
+                const result = await this.model.findByIdAndUpdate(cartId,cart,{new:true});
+            }else{
+                throw new Error ("el producto no se puede actualizar")
+            }
+        } catch (error) {
+            // por consola
+            console.log("upgradeProduct",error.message);
+            // para el usuario
+            throw new Error("Imposible agregar al carrito");
+        }
+    }
     
 };
