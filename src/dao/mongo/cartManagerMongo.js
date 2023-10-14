@@ -67,29 +67,21 @@ export class CartManagerMongo{
     async deleteProduct(cartId, productId){
         try {
             const cart = await this.model.findById(cartId);
-            console.log(cart)
-            if(cart){
-                const {products} = cart;
-                const prodExist = products.find((prod)=>prod.productId._id == productId);
-                if(prodExist){
-                    // si el producto existe se borra
-                    const modifyCart= cart.products.filter((prod )=> prod.productId._id != productId);
-                    cart.products= modifyCart;
-                    const result =await this.model.findByIdAndUpdate(cartId,cart,{new:true});
-                    return result
+            const prodExist = cart.products.find((prod)=>prod.productId._id == productId);
+            
+            if(prodExist){
+                const newProducts= cart.products.filter(prod=> prod.productId._id != productId);
+                cart.products= newProducts;
+                const result = await this.model.findByIdAndUpdate(cartId,cart,{new:true});
+                return result;
                 }else{
-                    console.log(error.message);
-                    throw new Error ("no se pudo encontrar el producto")    
+                    throw new Error ("No se pudo encontrar el producto porque no ha sido agregado")    
                 }
-                
-            }else{
-                throw new Error("Carrito no encontrado");
-            }
         } catch (error) {
             // por consola
-            console.log("addProduct",error.message);
+            console.log("deleteProduct",error.message);
             // para el usuario
-            throw new Error("Imposible agregar el producto al carrito");
+            throw new Error("Imposible encontrar el carrito");
         }
     };
     

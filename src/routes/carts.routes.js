@@ -38,7 +38,7 @@ router.post("/:cid/product/:pid",async (req,res)=>{
         res.status(404).json({status:"error",message:error.message});
     }
 });
-router.delete("/:cid/products/:pid", async(res,req) =>{
+router.delete("/:cid/products/:pid", async(req,res) =>{
     try {
         const cartId = req.params.cid;
         const productId = req.params.pid;
