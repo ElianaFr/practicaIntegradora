@@ -6,24 +6,34 @@ const router = Router();
 
 // solo rutas get porque las esta ejecutando desde el navegador
 router.get("/", async (req,res)=>{
+    try {
     // todos los datos que necesito para getProducts lo paso como query params
-    const {limit=10,page=1} = req.query;
+    const {limit=10,page=1,sort,category} = req.query;
     // detallo los filtros
-    const query = {
-        // category,
-        // stock
-    };
+    const query = {};
     const options = {
         limit,
         page,
-        // sort,
         lean:true
     }
-    try {
-        const result = await productsService.getProductsPaginate(query,options);
+    if (typeof limit !== 'number' || typeof page !== 'number') throw new Error('Los valores deben ser de tipo numérico');
+
+    if (limit < 1) throw new Error('El limite ingresado debe ser mayor a 1');
+    if (page < 1) throw new Error('La página ingresada debe ser mayor a 1');
+
+    if (sort === 'asc') {
+        options.sort = { price: 1 };
+    }
+    if (sort === 'desc') {
+        options.sort = { price: -1 };
+    }
+    if (category === 'mujer' || category === 'hombre' || category === 'unisex') {
+        query.category = category;
+    }    
+    const result = await productsService.getProductsPaginate(query,options);
         // la ruta del servidor. protocolo que estamos utilizando
-        const baseUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
-        const data ={
+    const baseUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
+    const data ={
             status:"success",
             payload: result.docs,
             totalPages: result.totalPages,
