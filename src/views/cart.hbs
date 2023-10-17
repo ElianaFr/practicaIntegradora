@@ -1,0 +1,25 @@
+<div class="containerTit">
+    <h1 class="tit">
+    CARRITO-LISTADO DE PRODUCTOS
+    </h1>
+</div>
+<div class="container">
+{{#each products}}
+    <div>
+        <p class="title">NUMERO DE ORDEN {{this._id}} </p>
+        <div class="containerCard">
+            <div class="card">
+                <img src="{{this.thumbnail}}">
+                <p class="title">{{this.title}}</p>
+                <p class="price">PRECIO: $ {{this.price}}</p>
+                <p class="title">CANTIDAD: {{this.quantity}}</p>
+            <button class="button btnAdd" onclick="deleteProd(`{{this._id}}`)">BORRAR</button>
+            
+            
+        </div>
+    </div>
+    </div>
+
+{{/each}}
+
+</div>

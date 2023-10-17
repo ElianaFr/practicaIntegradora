@@ -25,7 +25,12 @@ connectDB();
 
 
 // configuracion handlebars
-app.engine('.hbs', engine({extname: '.hbs'}));
+app.engine('.hbs', engine({extname: '.hbs', 
+        runtimeOptions:{
+            allowProtoMethodsByDefault:true,
+            allowProtoPropertiesByDefault:true,
+        }
+}));
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname,"/views"));
 

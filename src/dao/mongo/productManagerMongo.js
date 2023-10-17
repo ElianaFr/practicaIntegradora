@@ -20,7 +20,7 @@ export class ProductManagerMongo{
     };
     async getProducts(){
         try {
-            const products = await this.model.find();
+            const products = await this.model.find().lean();
             return products;
         } catch (error) {
             // por consola
@@ -31,7 +31,7 @@ export class ProductManagerMongo{
     };
     async getProductsById(id){
         try {
-            const product = await this.model.findById(id);
+            const product = await this.model.findById(id).lean();
             return product;
         } catch (error) {
             // por consola
@@ -71,4 +71,17 @@ export class ProductManagerMongo{
             throw new Error("Imposible actualizar el producto");
         }
     };
+    async getProductsPaginate(query,options){
+        try {
+            const products = await this.model.paginate(query,options);
+            return products;
+        } catch (error) {
+            // por consola
+            console.log("getProductsPaginate",error.message);
+            // para el usuario
+            throw new Error("Imposible cargar los productos");
+        }
+    };
+    
+    
 };
