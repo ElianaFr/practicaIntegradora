@@ -3,12 +3,13 @@
 // }
 const addToCart= async (productId) => {
     //id del carrito al que voy agregarle el producto 
-    let cartId = "652b0e80af0886f8e8950618";
+    let cartId = "6525e2b9fbc880249bbc09bc";
     if(!cartId){
         console.log("no existe el carrito");
         return;
     }
-    const response = await fetch(`/api/carts/${cartId}/product/${productId}`,{
+    const response = await fetch
+    (`/api/carts/${cartId}/product/${productId}`,{
         method: 'PUT',
     });
     if(response.status===200){

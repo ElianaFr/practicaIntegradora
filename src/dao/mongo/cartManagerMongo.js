@@ -30,9 +30,7 @@ export class CartManagerMongo{
     };
     async getCartById(cartId){
         try {
-            
             const cart = await this.model.findById(cartId).populate("products.productId").lean();
-            
             if(!cart){
                 throw new Error ("El carrito no existe")
             };

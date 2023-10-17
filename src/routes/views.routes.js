@@ -56,7 +56,6 @@ router.get("/:cid/product/:pid",async (req,res)=>{
         const productId = req.params.pid;
         console.log(cartId,productId)
         const cart = await cartsService.addProduct(cartId,productId);
-        // res.json({status:"success",cart});
         res.render("cart",cart)
     } catch (error) {
         res.status(404).json({status:"error",message:error.message});
@@ -64,7 +63,6 @@ router.get("/:cid/product/:pid",async (req,res)=>{
 });
 router.get("/carts",async (req,res)=>{
     const cartId= '6525e2b9fbc880249bbc09bc';
-
     try {
         const cart = await cartsService.getCartById(cartId);
         console.log(cart)
