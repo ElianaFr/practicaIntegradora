@@ -1,3 +1,4 @@
+import { error } from "console";
 import { Router } from "express";
 
 const router = Router();
@@ -15,8 +16,19 @@ router.post("/login", (req,res)=>{
 });
 router.get("/profile",(req,res)=>{
     console.log(req.session);
-    res.send("informacion de perfil")
+    if(req.session.email){
+        res.send(`informacion de perfil de ${req.session.email}`);
+    }else{
+        res.send("necesitas iniciar sesion")
+    }
+    
 });
+router.get("/logout",(req,res)=>{
+    req.session.destroy(error=>{
+        if(error) return res.send("no se pudo cerrar la sesion");
+        res.send("sesion finalizada")
+    })
+})
 
 
 export {router as sessionRouter}
