@@ -1,4 +1,5 @@
 // importamos el modelo creado en products.model
+import { Types } from "mongoose";
 import { productsModel } from "./models/products.model.js";
 
 export class ProductManagerMongo{
@@ -31,7 +32,10 @@ export class ProductManagerMongo{
     };
     async getProductsById(id){
         try {
+                  
             const product = await this.model.findById(id).lean();
+
+            console.log(product);
             return product;
         } catch (error) {
             // por consola

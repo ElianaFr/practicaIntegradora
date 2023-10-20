@@ -14,13 +14,12 @@ router.get("/", async (req,res)=>{
     const options = {
         limit,
         page,
-        lean:true
+        lean:true,
+        
     }
-    if (typeof limit !== 'number' || typeof page !== 'number') throw new Error('Los valores deben ser de tipo numérico');
-
+    
     if (limit < 1) throw new Error('El limite ingresado debe ser mayor a 1');
-    if (page < 1) throw new Error('La página ingresada debe ser mayor a 1');
-
+    
     if (sort === 'asc') {
         options.sort = { price: 1 };
     }
@@ -60,17 +59,6 @@ router.get("/:prodId", async(req,res)=>{
         res.json({status:"error", message:error.message});
     }
 });
-router.get("/:cid/product/:pid",async (req,res)=>{
-    try {
-        const cartId = req.params.cid;
-        const productId = req.params.pid;
-        console.log(cartId,productId)
-        const cart = await cartsService.addProduct(cartId,productId);
-        res.render("cart",cart)
-    } catch (error) {
-        res.status(404).json({status:"error",message:error.message});
-    }
-});
 router.get("/carts",async (req,res)=>{
     const cartId= '6525e2b9fbc880249bbc09bc';
     try {
@@ -84,13 +72,15 @@ router.get("/carts",async (req,res)=>{
         res.status(404).json({status:"error",message:error.message});
     }
 });
-
-
-router.get("/realtimeproducts", (req,res)=>{
+router.get("/:cid/product/:pid",async (req,res)=>{
     try {
-        res.render("realTimeProducts");
+        const cartId = req.params.cid;
+        const productId = req.params.pid;
+        console.log(cartId,productId)
+        const cart = await cartsService.addProduct(cartId,productId);
+        res.render("cart",cart)
     } catch (error) {
-        res.status(404)
+        res.status(404).json({status:"error",message:error.message});
     }
 });
 

@@ -6,10 +6,13 @@ import { __dirname } from "./utils.js";
 import path from "path";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
-// import { productsService } from "./dao/index.js";
 // mongoose
 import { connectDB } from "./config/dbConnection.js";
-
+// cookies
+import cookieParser from "cookie-parser";
+import { sessionRouter } from "./routes/users.routes.js";
+//modulo session
+import session from "express-session";
 
 // se define el puerto
 const port = 8080;
@@ -22,8 +25,6 @@ const io = new Server(httpServer);
 // conectamos la base de datos mongoose
 connectDB();
 
-
-
 // configuracion handlebars
 app.engine('.hbs', engine({extname: '.hbs', 
         runtimeOptions:{
@@ -33,21 +34,28 @@ app.engine('.hbs', engine({extname: '.hbs',
 }));
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname,"/views"));
-
 // midleware para leer la info del body
 app.use(express.json());
 //  midleware para leer la informacion del formulario http
 app.use(express.urlencoded({extended:true}));
 // se agrega la ruta donde van a estar nuestreos archivos publicos
 app.use(express.static("public"));
+// configuracion cookies
+app.use(cookieParser("claveCookies"));
+// session configuracion
+app.use(session({
+    secret:"clavePrueba",
+    resave:true,
+    saveUninitialized:true
+}));
 
 // routes
 app.use(viewsRouter);
 app.use("/api/products",productsRouter);
 app.use("/api/carts",cartsRouter);
+app.use("/api/users",sessionRouter);
 
 // socket server 
-
 io.on("connection",async (socket)=>{
     // cargar datos en tiempo real
     console.log("cliente conectado");
@@ -65,4 +73,5 @@ io.on("connection",async (socket)=>{
         socket.emit("nueva lista",upgradeList);
     })
 });
+
 
