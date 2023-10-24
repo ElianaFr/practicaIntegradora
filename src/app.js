@@ -10,11 +10,15 @@ import { Server } from "socket.io";
 import { connectDB } from "./config/dbConnection.js";
 // cookies
 import cookieParser from "cookie-parser";
-import { sessionRouter } from "./routes/users.routes.js";
+import { sessionRouter } from "./routes/sessions.routes.js";
 //modulo session
 import session from "express-session";
-// modulo filestore(login)
-import FileStore  from "session-file-store";
+// modulo mongostore
+import MongoStore from "connect-mongo";
+
+// // modulo filestore(login)
+// import FileStore  from "session-file-store";
+
 
 // se define el puerto
 const port = 8080;
@@ -26,8 +30,10 @@ const httpServer = app.listen(port,()=> console.log(`Servidor funcionando en el 
 const io = new Server(httpServer);
 // conectamos la base de datos mongoose
 connectDB();
-// conectamos el modulo filesstorecon session
-const fileStorage = FileStore(session);
+
+// // conectamos el modulo filesstorecon session
+// const fileStorage = FileStore(session);
+
 
 // configuracion handlebars
 app.engine('.hbs', engine({extname: '.hbs', 
@@ -38,7 +44,7 @@ app.engine('.hbs', engine({extname: '.hbs',
 }));
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname,"/views"));
-// midleware para leer la info del body
+// midleware para leer la info del body formulario
 app.use(express.json());
 //  midleware para leer la informacion del formulario http
 app.use(express.urlencoded({extended:true}));
@@ -54,10 +60,11 @@ app.use(session({
     // ttl el tiempo de la sesion
     // retries: el numero de veces que va a intentar de leer el archivo
     // path le indicamos donde van a estar las ssiones
-    store: new fileStorage({
-        ttl:60,
+    // se agrega almacenamiento de sesiones de mongo
+    store: MongoStore.create({
+        ttl:6000,
+        mongoUrl: "mongodb+srv://lef:coderback@cluster.7b2oiv7.mongodb.net/test?retryWrites=true&w=majority",
         retries:0,
-        path:path.join(__dirname,"/sessions")
     }),
     secret:"clavePrueba",
     resave:true,

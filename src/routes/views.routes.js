@@ -3,7 +3,7 @@ import { cartsService, productsService } from "../dao/index.js";
 
 
 const router = Router();
-
+// paginas que se van a mostrar en el navegador
 // solo rutas get porque las esta ejecutando desde el navegador
 router.get("/", async (req,res)=>{
     try {
@@ -83,6 +83,29 @@ router.get("/:cid/product/:pid",async (req,res)=>{
         res.status(404).json({status:"error",message:error.message});
     }
 });
+// rutas users
+router.get("/sessions/signup",async (req,res)=>{
+    try {
+        res.render("signup")
+    } catch (error) {
+        res.status(404).json({message:"error"});
+    }
+});
+router.get("/sessions/login",async (req,res)=>{
+    try {
+        res.render("login")
+    } catch (error) {
+        res.status(404).json({status:"error",message:error.message});
+    }
+});
+router.get("/sessions/profile",async (req,res)=>{
+    try {
+        res.render("profile")
+    } catch (error) {
+        res.status(404).json({status:"error",message:error.message});
+    }
+});
+
 
 
 export {router as viewsRouter};
