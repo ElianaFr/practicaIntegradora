@@ -13,6 +13,8 @@ import cookieParser from "cookie-parser";
 import { sessionRouter } from "./routes/users.routes.js";
 //modulo session
 import session from "express-session";
+// modulo filestore(login)
+import FileStore  from "session-file-store";
 
 // se define el puerto
 const port = 8080;
@@ -24,6 +26,8 @@ const httpServer = app.listen(port,()=> console.log(`Servidor funcionando en el 
 const io = new Server(httpServer);
 // conectamos la base de datos mongoose
 connectDB();
+// conectamos el modulo filesstorecon session
+const fileStorage = FileStore(session);
 
 // configuracion handlebars
 app.engine('.hbs', engine({extname: '.hbs', 
@@ -44,6 +48,17 @@ app.use(express.static("public"));
 app.use(cookieParser("claveCookies"));
 // session configuracion
 app.use(session({
+    // store: que no utilice la memoria del ordenador para guargar las sesiones
+    // sino que utilice filestorage
+    // propiedades ttil,retries,path
+    // ttl el tiempo de la sesion
+    // retries: el numero de veces que va a intentar de leer el archivo
+    // path le indicamos donde van a estar las ssiones
+    store: new fileStorage({
+        ttl:60,
+        retries:0,
+        path:path.join(__dirname,"/sessions")
+    }),
     secret:"clavePrueba",
     resave:true,
     saveUninitialized:true
@@ -53,7 +68,7 @@ app.use(session({
 app.use(viewsRouter);
 app.use("/api/products",productsRouter);
 app.use("/api/carts",cartsRouter);
-app.use("/api/users",sessionRouter);
+app.use("/api/sessions",sessionRouter);
 
 // socket server 
 io.on("connection",async (socket)=>{

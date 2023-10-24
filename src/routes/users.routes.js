@@ -6,18 +6,28 @@ const router = Router();
 router.get("/",(req,res)=>{
     res.render("users");
 });
-router.post("/login", (req,res)=>{
+router.post("/register", (req,res)=>{
     console.log(req.session);
     const loginForm =  req.body;
     // de esta manera se guarda la info de la sesion
     req.session.email = loginForm.email;
+    req.session.last_name = loginForm.last_name;
+    req.session.first_name = loginForm.first_name;
+    req.session.age = loginForm.age;
+    req.session.password = loginForm.password;
     console.log(req.session);
     res.send("peticion login");        
 });
+router.get("/login", (req,res)=>{
+    const {name}= req.query;
+    req.session.user= name;
+    res.send("login y sesion creada en archivos")        
+});
+
 router.get("/profile",(req,res)=>{
     console.log(req.session);
-    if(req.session.email){
-        res.send(`informacion de perfil de ${req.session.email}`);
+    if(req.session.user){
+        res.send(`informacion de perfil de ${req.session.user}`);
     }else{
         res.send("necesitas iniciar sesion")
     }
