@@ -1,7 +1,4 @@
 import express from "express";
-import { productsRouter } from "./routes/products.routes.js";
-import { cartsRouter } from "./routes/carts.routes.js";
-import { viewsRouter } from "./routes/views.routes.js";
 import { __dirname } from "./utils.js";
 import path from "path";
 import { engine } from "express-handlebars";
@@ -10,14 +7,16 @@ import { Server } from "socket.io";
 import { connectDB } from "./config/dbConnection.js";
 // cookies
 import cookieParser from "cookie-parser";
-import { sessionRouter } from "./routes/sessions.routes.js";
 //modulo session
 import session from "express-session";
 // modulo mongostore
 import MongoStore from "connect-mongo";
 
-// // modulo filestore(login)
-// import FileStore  from "session-file-store";
+import { productsRouter } from "./routes/products.routes.js";
+import { cartsRouter } from "./routes/carts.routes.js";
+import { viewsRouter } from "./routes/views.routes.js";
+import { sessionRouter } from "./routes/sessions.routes.js";
+
 
 
 // se define el puerto
@@ -30,10 +29,6 @@ const httpServer = app.listen(port,()=> console.log(`Servidor funcionando en el 
 const io = new Server(httpServer);
 // conectamos la base de datos mongoose
 connectDB();
-
-// // conectamos el modulo filesstorecon session
-// const fileStorage = FileStore(session);
-
 
 // configuracion handlebars
 app.engine('.hbs', engine({extname: '.hbs', 

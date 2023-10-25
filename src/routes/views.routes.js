@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { cartsService, productsService } from "../dao/index.js";
+import { cartsService, productsService,userService } from "../dao/index.js";
 
 
 const router = Router();
@@ -7,6 +7,11 @@ const router = Router();
 // solo rutas get porque las esta ejecutando desde el navegador
 router.get("/", async (req,res)=>{
     try {
+        if (!req.session?.email) return res.redirect('/login');
+        const user = await userService.getUserByEmail(req.session.email);
+        console.log(user);
+    
+        
     // todos los datos que necesito para getProducts lo paso como query params
     const {limit=10,page=1,sort,category} = req.query;
     // detallo los filtros
@@ -41,9 +46,11 @@ router.get("/", async (req,res)=>{
             page: result.page,
             prevLink: result.hasPrevPage ? `${baseUrl.replace(`page=${result.page}`, `page=${result.prevPage}`)}` : null,
             nextLink: result.hasNextPage ? baseUrl.includes("page") ?
-            baseUrl.replace(`page=${result.page}`, `page=${result.nextPage}`) : baseUrl.concat(`?page=${result.nextPage}`) : null    
+            baseUrl.replace(`page=${result.page}`, `page=${result.nextPage}`) : baseUrl.concat(`?page=${result.nextPage}`) : null,
+            userData: user
         }
         console.log(data);
+        
         res.render("home",data);    
     } catch (error) {
         res.status(404)

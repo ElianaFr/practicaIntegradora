@@ -1,13 +1,13 @@
 import { Router } from "express";
-
-import { usersModel } from "../dao/mongo/models/users.model.js";
+import {userService} from "../dao/index.js"
+// import { usersModel } from "../dao/mongo/models/users.model.js";
 
 const router = Router();
 // ruta para registrar y cargar un usuario
 router.post("/signup", async(req,res)=>{
     try {
         const signForm = req.body;
-        const result = await usersModel.create(signForm);
+        const result = await userService.createUser(signForm);
         res.render("login",{message:"Usuario registrado correctamente"})
     } catch (error) {
         res.render("signup",{error:"No se pudo registrar el usuario"})
@@ -17,7 +17,9 @@ router.post("/signup", async(req,res)=>{
 router.post("/login", async(req,res)=>{
     try {
         const loginForm = req.body;
-        const user = await usersModel.findOne({email:loginForm.email});
+        console.log(loginForm)
+        const user = await userService.getUserByEmail(loginForm.email);
+        console.log(user)
         // verificar usuario y contraseña
         if(!user){
             return res.render("login",{error:"usuario no encontrado"})
@@ -41,7 +43,7 @@ router.get("/logout", async(req,res)=>{
             
         });
     } catch (error) {
-        res.render("signup",{error:"No se pudo registrar el usuario"})
+        res.render("signup",{error:"No se pudo cerrar sesion"})
     }
 });
 
