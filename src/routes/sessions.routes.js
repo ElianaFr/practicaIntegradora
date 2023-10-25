@@ -17,7 +17,12 @@ router.post("/signup", async(req,res)=>{
 router.post("/login", async(req,res)=>{
     try {
         const loginForm = req.body;
-        console.log(loginForm)
+        if(loginForm.email === "adminCoder@coder.com"&& loginForm.password === "adminCod3r123"){
+            req.session.rol = "admin";
+            const userRol = req.session.rol;
+            res.render ("home",{userRol})
+        }else{
+            console.log(loginForm)
         const user = await userService.getUserByEmail(loginForm.email);
         console.log(user)
         // verificar usuario y contraseña
@@ -30,6 +35,27 @@ router.post("/login", async(req,res)=>{
         // usuario y contraseña correcta, creamos la session
         req.session.email = user.email;
         res.redirect("/")
+        } 
+        
+
+        
+
+// 
+
+
+        // console.log(loginForm)
+        // const user = await userService.getUserByEmail(loginForm.email);
+        // console.log(user)
+        // // verificar usuario y contraseña
+        // if(!user){
+        //     return res.render("login",{error:"usuario no encontrado"})
+        // };
+        // if(user.password !== loginForm.password){
+        //     return res.render("login",{error:"contraseña incorrecta"})
+        // }
+        // // usuario y contraseña correcta, creamos la session
+        // req.session.email = user.email;
+        // res.redirect("/")
         } catch (error) {
         res.render("login",{error:"No se pudo iniciar sesion"})
     }
