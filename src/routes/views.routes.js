@@ -83,6 +83,7 @@ router.get("/:cid/product/:pid",async (req,res)=>{
         res.status(404).json({status:"error",message:error.message});
     }
 });
+
 // rutas users
 router.get("/sessions/signup",async (req,res)=>{
     try {
@@ -100,7 +101,13 @@ router.get("/sessions/login",async (req,res)=>{
 });
 router.get("/sessions/profile",async (req,res)=>{
     try {
-        res.render("profile")
+        if(req.session.email){
+            const userEmail= req.session.email;
+            res.render("profile",{userEmail});    
+        }
+        else{
+            res.redirect("/sessions/login");
+        }
     } catch (error) {
         res.status(404).json({status:"error",message:error.message});
     }

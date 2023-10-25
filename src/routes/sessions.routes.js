@@ -1,17 +1,52 @@
-import { error } from "console";
 import { Router } from "express";
 
-const router = Router();
+import { usersModel } from "../dao/mongo/models/users.model.js";
 
+const router = Router();
+// ruta para registrar y cargar un usuario
 router.post("/signup", async(req,res)=>{
     try {
         const signForm = req.body;
-        
+        const result = await usersModel.create(signForm);
+        res.render("login",{message:"Usuario registrado correctamente"})
     } catch (error) {
         res.render("signup",{error:"No se pudo registrar el usuario"})
     }
+});
+// ruta para iniciar sesion
+router.post("/login", async(req,res)=>{
+    try {
+        const loginForm = req.body;
+        const user = await usersModel.findOne({email:loginForm.email});
+        // verificar usuario y contraseña
+        if(!user){
+            return res.render("login",{error:"usuario no encontrado"})
+        };
+        if(user.password !== loginForm.password){
+            return res.render("login",{error:"contraseña incorrecta"})
+        }
+        // usuario y contraseña correcta, creamos la session
+        req.session.email = user.email;
+        res.redirect("/")
+        } catch (error) {
+        res.render("login",{error:"No se pudo iniciar sesion"})
+    }
+});
+// ruta para log out
+router.get("/logout", async(req,res)=>{
+    try {
+        req.session.destroy(err=>{
+            if(err) return res.render("profile",{error:"Imposible cerrar sesion"});
+            res.redirect("/")
+            
+        });
+    } catch (error) {
+        res.render("signup",{error:"No se pudo registrar el usuario"})
+    }
+});
 
-})
+
+
 
 
 

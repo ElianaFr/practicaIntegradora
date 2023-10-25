@@ -211,4 +211,30 @@ input{
 p{
     font-size: 15px;
 }
+/* login */
+.login{
+    padding-top: 100px;
+    margin-top: 100px;
+}
+.signup{
+    padding-top: 100px;
+    margin-top: 100px;
+}
+.profile{
+    padding-top: 100px;
+    margin-top: 100px;
+}
+.message{
+    margin-top: 65px;
+    color: green;
+    
+}
+.error{
+    margin-top: 65px;
+    color: red;
+}
+.welcomeUser{
+    padding-top: 100px;
+    margin-top: 100px;
+}
 
