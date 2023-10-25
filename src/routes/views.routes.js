@@ -7,7 +7,7 @@ const router = Router();
 // solo rutas get porque las esta ejecutando desde el navegador
 router.get("/", async (req,res)=>{
     try {
-        if (!req.session?.email) return res.redirect('/login');
+        if (!req.session?.email) return res.render('login');
         const user = await userService.getUserByEmail(req.session.email);
         console.log(user);
     
