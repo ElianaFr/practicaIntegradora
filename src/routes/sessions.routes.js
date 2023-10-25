@@ -36,12 +36,6 @@ router.post("/login", async(req,res)=>{
         req.session.email = user.email;
         res.redirect("/")
         } 
-        
-
-        
-
-// 
-
 
         // console.log(loginForm)
         // const user = await userService.getUserByEmail(loginForm.email);
