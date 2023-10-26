@@ -1,12 +1,14 @@
 import { Router } from "express";
 import {userService} from "../dao/index.js"
-// import { usersModel } from "../dao/mongo/models/users.model.js";
+// el hash del pass
+import { createHash, comparePass } from "../utils.js";
 
 const router = Router();
 // ruta para registrar y cargar un usuario
 router.post("/signup", async(req,res)=>{
     try {
         const signForm = req.body;
+        signForm.password = createHash(signForm.password);
         const result = await userService.createUser(signForm);
         res.render("login",{message:"Usuario registrado correctamente"})
     } catch (error) {
@@ -23,18 +25,18 @@ router.post("/login", async(req,res)=>{
             res.render ("home",{userRol})
         }else{
             console.log(loginForm)
-        const user = await userService.getUserByEmail(loginForm.email);
-        console.log(user)
-        // verificar usuario y contraseña
-        if(!user){
-            return res.render("login",{error:"usuario no encontrado"})
-        };
-        if(user.password !== loginForm.password){
-            return res.render("login",{error:"contraseña incorrecta"})
-        }
+            const user = await userService.getUserByEmail(loginForm.email);
+            console.log(user)
+            // verificar usuario y contraseña
+            if(!user){
+                return res.render("login",{error:"usuario no encontrado"})
+            };
+            if(!comparePass(loginForm.password,user)){
+                return res.render("login",{error:"contraseña incorrecta"})
+            };
         // usuario y contraseña correcta, creamos la session
-        req.session.email = user.email;
-        res.redirect("/")
+            req.session.email = user.email;
+            res.redirect("/")
         } 
 
         // console.log(loginForm)
