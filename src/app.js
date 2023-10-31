@@ -11,6 +11,9 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 // modulo mongostore
 import MongoStore from "connect-mongo";
+// modulo passport
+import passport from "passport";
+import { initializePassport } from "./config/passport.config.js";
 
 import { productsRouter } from "./routes/products.routes.js";
 import { cartsRouter } from "./routes/carts.routes.js";
@@ -65,6 +68,12 @@ app.use(session({
     resave:true,
     saveUninitialized:true
 }));
+// configurar passport
+initializePassport();
+//midleware se inicia passport dentro del servidor
+app.use(passport.initialize());
+// mideleware para crear una sesion dentro de la app
+app.use(passport.session());
 
 // routes
 app.use(viewsRouter);

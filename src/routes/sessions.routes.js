@@ -1,43 +1,130 @@
 import { Router } from "express";
 import {userService} from "../dao/index.js"
-// el hash del pass
-import { createHash, comparePass } from "../utils.js";
+import passport from "passport";
+
 
 const router = Router();
-// ruta para registrar y cargar un usuario
-router.post("/signup", async(req,res)=>{
+// ruta para registrar y cargar un usuario con passport
+// se le pasa un objeto hacia donde se va a redirigir el usuario en caso de alguna falla
+router.post("/signup",passport.authenticate("signupLocalStrategy",{failureRedirect:"/api/sessions/fail-signup"}),
+async(req,res)=>{
+    res.render("login",{message:"Usuario registrado correctamente"})
+});
+router.get("/fail-signup",(req,res)=>{
+    res.render("signup",{error:"No se pudo registrar el usuario"})
+})
+
+// ruta para iniciar sesion
+router.post("/login", passport.authenticate("loginLocalStrategy",{failureRedirect:"/api/sessions/fail-login"}),
+    async(req,res)=>{
+        res.redirect("/")
+    });
+    //     try {
+    //         const loginForm = req.body;
+    //         if(loginForm.email === "adminCoder@coder.com"&& loginForm.password === "adminCod3r123"){
+    //         req.session.rol = "admin";
+    //         const userRol = req.session.rol;
+    //         res.render ("home",{userRol})
+    //     }else{
+    //         console.log(loginForm)
+    //         const user = await userService.getUserByEmail(loginForm.email);
+    //         console.log(user)
+    //         // verificar usuario y contraseña
+    //         if(!user){
+    //             return res.render("login",{error:"usuario no encontrado"})
+    //         };
+    //         if(!comparePass(loginForm.password,user)){
+    //             return res.render("login",{error:"contraseña incorrecta"})
+    //         };
+    //     // usuario y contraseña correcta, creamos la session
+    //         req.session.email = user.email;
+    //         res.redirect("/")
+    //     } 
+    //     } catch (error) {
+    //     res.render("login",{error:"No se pudo iniciar sesion"})
+    // }
+
+// ruta para log out
+router.get("/fail-login",(req,res)=>{
+    res.render("login",{error:"no se pudo iniciar sesion, correo o contraseña incorrectos"});
+});
+
+router.get("/logout", async(req,res)=>{
     try {
-        const signForm = req.body;
-        signForm.password = createHash(signForm.password);
-        const result = await userService.createUser(signForm);
-        res.render("login",{message:"Usuario registrado correctamente"})
+        req.session.destroy(err=>{
+            if(err) return res.render("profile",{error:"Imposible cerrar sesion"});
+            res.render("login")
+            
+        });
     } catch (error) {
-        res.render("signup",{error:"No se pudo registrar el usuario"})
+        res.render("signup",{error:"No se pudo cerrar sesion"})
     }
 });
-// ruta para iniciar sesion
-router.post("/login", async(req,res)=>{
-    try {
-        const loginForm = req.body;
-        if(loginForm.email === "adminCoder@coder.com"&& loginForm.password === "adminCod3r123"){
-            req.session.rol = "admin";
-            const userRol = req.session.rol;
-            res.render ("home",{userRol})
-        }else{
-            console.log(loginForm)
-            const user = await userService.getUserByEmail(loginForm.email);
-            console.log(user)
-            // verificar usuario y contraseña
-            if(!user){
-                return res.render("login",{error:"usuario no encontrado"})
-            };
-            if(!comparePass(loginForm.password,user)){
-                return res.render("login",{error:"contraseña incorrecta"})
-            };
-        // usuario y contraseña correcta, creamos la session
-            req.session.email = user.email;
-            res.redirect("/")
-        } 
+
+
+
+export {router as sessionRouter}
+
+// try {
+//     const loginForm = req.body;
+//     if(loginForm.email === "adminCoder@coder.com"&& loginForm.password === "adminCod3r123"){
+//     req.session.rol = "admin";
+//     const userRol = req.session.rol;
+//     res.render ("home",{userRol})
+// }else{
+//     console.log(loginForm)
+//     const user = await userService.getUserByEmail(loginForm.email);
+//     console.log(user)
+//     // verificar usuario y contraseña
+//     if(!user){
+//         return res.render("login",{error:"usuario no encontrado"})
+//     };
+//     if(!comparePass(loginForm.password,user)){
+//         return res.render("login",{error:"contraseña incorrecta"})
+//     };
+// // usuario y contraseña correcta, creamos la session
+//     req.session.email = user.email;
+//     res.redirect("/")
+// } 
+
+
+
+
+
+
+
+
+
+// try {
+    //     // const signForm = req.body;
+    //     // signForm.password = createHash(signForm.password);
+    //     // const result = await userService.createUser(signForm);
+    //     res.render("login",{message:"Usuario registrado correctamente"})
+    // } catch (error) {
+    //     res.render("signup",{error:"No se pudo registrar el usuario"})
+    // }
+// router.post("/login", async(req,res)=>{
+//     try {
+//         const loginForm = req.body;
+//         if(loginForm.email === "adminCoder@coder.com"&& loginForm.password === "adminCod3r123"){
+//             req.session.rol = "admin";
+//             const userRol = req.session.rol;
+//             res.render ("home",{userRol})
+//         }else{
+//             console.log(loginForm)
+//             const user = await userService.getUserByEmail(loginForm.email);
+//             console.log(user)
+//             // verificar usuario y contraseña
+//             if(!user){
+//                 return res.render("login",{error:"usuario no encontrado"})
+//             };
+//             if(!comparePass(loginForm.password,user)){
+//                 return res.render("login",{error:"contraseña incorrecta"})
+//             };
+//         // usuario y contraseña correcta, creamos la session
+//             req.session.email = user.email;
+//             res.redirect("/")
+//         } 
 
         // console.log(loginForm)
         // const user = await userService.getUserByEmail(loginForm.email);
@@ -52,37 +139,25 @@ router.post("/login", async(req,res)=>{
         // // usuario y contraseña correcta, creamos la session
         // req.session.email = user.email;
         // res.redirect("/")
-        } catch (error) {
-        res.render("login",{error:"No se pudo iniciar sesion"})
-    }
-});
-// ruta para log out
-router.get("/logout", async(req,res)=>{
-    try {
-        req.session.destroy(err=>{
-            if(err) return res.render("profile",{error:"Imposible cerrar sesion"});
-            res.redirect("/")
-            
-        });
-    } catch (error) {
-        res.render("signup",{error:"No se pudo cerrar sesion"})
-    }
-});
+//         } catch (error) {
+//         res.render("login",{error:"No se pudo iniciar sesion"})
+//     }
+// });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-export {router as sessionRouter}
+        // console.log(loginForm)
+        // const user = await userService.getUserByEmail(loginForm.email);
+        // console.log(user)
+        // // verificar usuario y contraseña
+        // if(!user){
+        //     return res.render("login",{error:"usuario no encontrado"})
+        // };
+        // if(user.password !== loginForm.password){
+        //     return res.render("login",{error:"contraseña incorrecta"})
+        // }
+        // // usuario y contraseña correcta, creamos la session
+        // req.session.email = user.email;
+     
+        // res.redirect("/")
 
 
 

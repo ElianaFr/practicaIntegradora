@@ -32,4 +32,14 @@ export class UsersManagerMongo{
             throw new Error('Error al dar de alta al usuario');
         }
     };
-}
+    async getUserById (userId) {
+        try {
+            const user = await this.model.findById(userId).lean();
+            if (!user) throw new Error('El usuario ingresado no existe.');
+            return user;
+        } catch (error) {
+            console.log('getUserById:', error.message);
+            throw new Error('Se produjo un error al cargar la información.');
+        }
+    }
+};
