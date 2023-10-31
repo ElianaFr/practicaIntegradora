@@ -4,6 +4,9 @@ import passport from "passport";
 
 
 const router = Router();
+// github register
+
+
 // ruta para registrar y cargar un usuario con passport
 // se le pasa un objeto hacia donde se va a redirigir el usuario en caso de alguna falla
 router.post("/signup",passport.authenticate("signupLocalStrategy",{failureRedirect:"/api/sessions/fail-signup"}),
@@ -12,7 +15,7 @@ async(req,res)=>{
 });
 router.get("/fail-signup",(req,res)=>{
     res.render("signup",{error:"No se pudo registrar el usuario"})
-})
+});
 
 // ruta para iniciar sesion
 router.post("/login", passport.authenticate("loginLocalStrategy",{failureRedirect:"/api/sessions/fail-login"}),
