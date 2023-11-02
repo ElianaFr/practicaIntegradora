@@ -1,12 +1,10 @@
 import { Router } from "express";
 import {userService} from "../dao/index.js"
 import passport from "passport";
+import { config } from "../config/config.js"
 
 
 const router = Router();
-// github register
-
-
 // ruta para registrar y cargar un usuario con passport
 // se le pasa un objeto hacia donde se va a redirigir el usuario en caso de alguna falla
 router.post("/signup",passport.authenticate("signupLocalStrategy",{failureRedirect:"/api/sessions/fail-signup"}),
@@ -52,6 +50,16 @@ router.get("/fail-login",(req,res)=>{
     res.render("login",{error:"no se pudo iniciar sesion, correo o contraseña incorrectos"});
 });
 
+// ruta para registro con github
+router.get("/signup-github",passport.authenticate("signupGithubStrategy"));
+// ruta del callback
+router.get(config.github.callbackURL, passport.authenticate("signupGithubStrategy",{
+    failureRedirect:"/api/sessions/fail-signup"
+}), (req,res)=>{
+    res.redirect("/")
+});
+
+// ruta para logout
 router.get("/logout", async(req,res)=>{
     try {
         req.session.destroy(err=>{
@@ -67,6 +75,17 @@ router.get("/logout", async(req,res)=>{
 
 
 export {router as sessionRouter}
+
+
+
+
+
+
+
+
+
+
+
 
 // try {
 //     const loginForm = req.body;

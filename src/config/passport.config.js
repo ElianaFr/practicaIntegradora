@@ -2,10 +2,11 @@ import passport from "passport";
 // importar la estrategia
 import localStrategy from "passport-local";
 import { createHash, comparePass } from "../utils.js";
+import { config } from "./config.js";
 import { userService } from "../dao/index.js";
+import GithubStrategy from "passport-github2";
+
 // conectar passport con la session
-
-
 export const initializePassport = ()=>{
     // crear estrategias
     // se crea la estrategia de registro
@@ -70,6 +71,21 @@ export const initializePassport = ()=>{
             }
         }
     ))
+    // estrategia de registro GITHUB
+    passport.use("signupGithubStrategy", new GithubStrategy(
+        {
+            clientID: config.github.clientId,
+            clientSecret: config.github.clienteSecret,
+            callbackURL: `http://localhost:8080/api/sessions${config.github.callbackURL}`
+        },
+        async(accessToken,refreshToken,profile,done)=>{
+            try {
+                console.log("profile",profile);
+            } catch (error) {
+                return done (error)
+            }
+        }
+    ));
 
     // para la conexion de la ssession
     // SOLO GUARDA EL ID en la session

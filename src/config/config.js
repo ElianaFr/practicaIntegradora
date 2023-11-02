@@ -12,7 +12,7 @@ export const config = {
         url: process.env.MONGO_URL
     },
     github:{
-        callbackUrl: process.env.GITHUB_CALLBACK_URL,
+        callbackURL: process.env.GITHUB_CALLBACK_URL,
         clientId: process.env.GITHUB_CLIENT_ID,
         clienteSecret: process.env.GITHUB_CLIENT_SECRET
     }

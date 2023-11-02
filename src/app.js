@@ -14,6 +14,7 @@ import MongoStore from "connect-mongo";
 // modulo passport
 import passport from "passport";
 import { initializePassport } from "./config/passport.config.js";
+import {config} from "./config/config.js"
 
 import { productsRouter } from "./routes/products.routes.js";
 import { cartsRouter } from "./routes/carts.routes.js";
@@ -61,10 +62,12 @@ app.use(session({
     // se agrega almacenamiento de sesiones de mongo
     store: MongoStore.create({
         ttl:6000,
-        mongoUrl: "mongodb+srv://lef:coderback@cluster.7b2oiv7.mongodb.net/test?retryWrites=true&w=majority",
+        // mongoUrl: "mongodb+srv://lef:coderback@cluster.7b2oiv7.mongodb.net/test?retryWrites=true&w=majority",
+        mongoUrl: config.mongo.url,
         retries:0,
     }),
-    secret:"clavePrueba",
+    secret: config.server.secretSession,
+    // secret:"clavePrueba",
     resave:true,
     saveUninitialized:true
 }));
