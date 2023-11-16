@@ -2,75 +2,21 @@ import { Router } from "express";
 import {userService} from "../dao/index.js"
 import passport from "passport";
 import { config } from "../config/config.js"
-
+import { SessionController } from "../controllers/sessions.controller.js";
 
 const router = Router();
-// ruta para registrar y cargar un usuario con passport
-// se le pasa un objeto hacia donde se va a redirigir el usuario en caso de alguna falla
-router.post("/signup",passport.authenticate("signupLocalStrategy",{failureRedirect:"/api/sessions/fail-signup"}),
-async(req,res)=>{
-    res.render("login",{message:"Usuario registrado correctamente"})
-});
-router.get("/fail-signup",(req,res)=>{
-    res.render("signup",{error:"No se pudo registrar el usuario"})
-});
-
+// ruta para registrar usuario
+router.post("/signup",passport.authenticate("signupLocalStrategy",{failureRedirect:"/api/sessions/fail-signup"}),SessionController.redirectLogin);
+router.get("/fail-signup",SessionController.failSignup);
 // ruta para iniciar sesion
-router.post("/login", passport.authenticate("loginLocalStrategy",{failureRedirect:"/api/sessions/fail-login"}),
-    async(req,res)=>{
-        res.redirect("/")
-    });
-    //     try {
-    //         const loginForm = req.body;
-    //         if(loginForm.email === "adminCoder@coder.com"&& loginForm.password === "adminCod3r123"){
-    //         req.session.rol = "admin";
-    //         const userRol = req.session.rol;
-    //         res.render ("home",{userRol})
-    //     }else{
-    //         console.log(loginForm)
-    //         const user = await userService.getUserByEmail(loginForm.email);
-    //         console.log(user)
-    //         // verificar usuario y contraseña
-    //         if(!user){
-    //             return res.render("login",{error:"usuario no encontrado"})
-    //         };
-    //         if(!comparePass(loginForm.password,user)){
-    //             return res.render("login",{error:"contraseña incorrecta"})
-    //         };
-    //     // usuario y contraseña correcta, creamos la session
-    //         req.session.email = user.email;
-    //         res.redirect("/")
-    //     } 
-    //     } catch (error) {
-    //     res.render("login",{error:"No se pudo iniciar sesion"})
-    // }
-
-// ruta para log out
-router.get("/fail-login",(req,res)=>{
-    res.render("login",{error:"no se pudo iniciar sesion, correo o contraseña incorrectos"});
-});
-
-// ruta para registro con github
-router.get("/signup-github",passport.authenticate("signupGithubStrategy"));
-// ruta del callback
+router.post("/login", passport.authenticate("loginLocalStrategy",{failureRedirect:"/api/sessions/fail-login"}),SessionController.redirectHome);
+router.get("/fail-login",SessionController.failLogin);
+// ruta github
 router.get(config.github.callbackURL, passport.authenticate("signupGithubStrategy",{
     failureRedirect:"/api/sessions/fail-signup"
-}), (req,res)=>{
-    res.redirect("/")
-});
-
-// ruta para logout
-router.get("/logout", async(req,res)=>{
-    try {
-        req.session.destroy(err=>{
-            if(err) return res.render("profile",{error:"Imposible cerrar sesion"});
-            res.render("login")
-            
-        });
-    } catch (error) {
-        res.render("signup",{error:"No se pudo cerrar sesion"})
-    }
-});
+}),SessionController.githubSignup);
+// logout
+router.get("/logout", SessionController.logout)
 
 
 
@@ -78,6 +24,74 @@ export {router as sessionRouter}
 
 
 
+
+
+// // ruta para registrar y cargar un usuario con passport
+// // se le pasa un objeto hacia donde se va a redirigir el usuario en caso de alguna falla
+// router.post("/signup",passport.authenticate("signupLocalStrategy",{failureRedirect:"/api/sessions/fail-signup"}),
+// async(req,res)=>{
+//     res.render("login",{message:"Usuario registrado correctamente"})
+// });
+// router.get("/fail-signup",(req,res)=>{
+//     res.render("signup",{error:"No se pudo registrar el usuario"})
+// });
+
+// // ruta para iniciar sesion
+// router.post("/login", passport.authenticate("loginLocalStrategy",{failureRedirect:"/api/sessions/fail-login"}),
+//     async(req,res)=>{
+//         res.redirect("/")
+//     });
+//     //     try {
+//     //         const loginForm = req.body;
+//     //         if(loginForm.email === "adminCoder@coder.com"&& loginForm.password === "adminCod3r123"){
+//     //         req.session.rol = "admin";
+//     //         const userRol = req.session.rol;
+//     //         res.render ("home",{userRol})
+//     //     }else{
+//     //         console.log(loginForm)
+//     //         const user = await userService.getUserByEmail(loginForm.email);
+//     //         console.log(user)
+//     //         // verificar usuario y contraseña
+//     //         if(!user){
+//     //             return res.render("login",{error:"usuario no encontrado"})
+//     //         };
+//     //         if(!comparePass(loginForm.password,user)){
+//     //             return res.render("login",{error:"contraseña incorrecta"})
+//     //         };
+//     //     // usuario y contraseña correcta, creamos la session
+//     //         req.session.email = user.email;
+//     //         res.redirect("/")
+//     //     } 
+//     //     } catch (error) {
+//     //     res.render("login",{error:"No se pudo iniciar sesion"})
+//     // }
+
+// // ruta para log out
+// router.get("/fail-login",(req,res)=>{
+//     res.render("login",{error:"no se pudo iniciar sesion, correo o contraseña incorrectos"});
+// });
+
+// // ruta para registro con github
+// router.get("/signup-github",passport.authenticate("signupGithubStrategy"));
+// // ruta del callback
+// router.get(config.github.callbackURL, passport.authenticate("signupGithubStrategy",{
+//     failureRedirect:"/api/sessions/fail-signup"
+// }), (req,res)=>{
+//     res.redirect("/")
+// });
+
+// // ruta para logout
+// router.get("/logout", async(req,res)=>{
+//     try {
+//         req.session.destroy(err=>{
+//             if(err) return res.render("profile",{error:"Imposible cerrar sesion"});
+//             res.render("login")
+            
+//         });
+//     } catch (error) {
+//         res.render("signup",{error:"No se pudo cerrar sesion"})
+//     }
+// });
 
 
 
