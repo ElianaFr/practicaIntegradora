@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { cartsService,userService } from "../dao/index.js";
+import { userService } from "../dao/index.js";
 import { ProductsService } from "../service/products.service.js";
+import { CartsService } from "../service/carts.service.js";
 
 const router = Router();
+
+
 // paginas que se van a mostrar en el navegador
 // solo rutas get porque las esta ejecutando desde el navegador
 router.get("/", async (req,res)=>{
@@ -73,7 +76,9 @@ router.get("/:prodId", async(req,res)=>{
 router.get("/carts",async (req,res)=>{
     const cartId= '6525e2b9fbc880249bbc09bc';
     try {
-        const cart = await cartsService.getCartById(cartId);
+        const cart = await CartsService.getCartById(cartId);
+        
+        // const cart = await cartsService.getCartById(cartId);
         console.log(cart)
         if(!cart){
             return res.status(404).send('carrito no encontrado');
@@ -88,7 +93,9 @@ router.get("/:cid/product/:pid",async (req,res)=>{
         const cartId = req.params.cid;
         const productId = req.params.pid;
         console.log(cartId,productId)
-        const cart = await cartsService.addProduct(cartId,productId);
+        const cart = await CartsService.addProduct(cartId,productId);
+        
+        // const cart = await cartsService.addProduct(cartId,productId);
         res.render("cart",cart)
     } catch (error) {
         res.status(404).json({status:"error",message:error.message});
