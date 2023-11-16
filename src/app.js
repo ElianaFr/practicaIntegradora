@@ -15,12 +15,13 @@ import MongoStore from "connect-mongo";
 import passport from "passport";
 import { initializePassport } from "./config/passport.config.js";
 import {config} from "./config/config.js"
-
+// router
 import { productsRouter } from "./routes/products.routes.js";
 import { cartsRouter } from "./routes/carts.routes.js";
 import { viewsRouter } from "./routes/views.routes.js";
 import { sessionRouter } from "./routes/sessions.routes.js";
-
+// service products
+import { ProductsService } from "./service/products.service.js";
 
 
 // se define el puerto
@@ -88,17 +89,25 @@ app.use("/api/sessions",sessionRouter);
 io.on("connection",async (socket)=>{
     // cargar datos en tiempo real
     console.log("cliente conectado");
-    const products = await productsService.getProducts();
+    const products = await ProductsService.getProducts();
+    
+    // const products = await productsService.getProducts();
     socket.emit("productsArray",products);
     // cargar el producto que me paso el cliente
     socket.on("addProduct",async(productData)=>{
-        const productForm = await productsService.addProduct(productData);
-        const newList = await productsService.getProducts();
+        const productForm = await ProductsService.createProducts(productData);
+        const newList = await ProductsService.getProducts();
+        
+        // const productForm = await productsService.addProduct(productData);
+        // const newList = await productsService.getProducts();
         socket.emit("productsArray",newList);
     });
     socket.on("deleteProd", async (deleteId)=>{
-        const delList = await productsService.deleteProduct(deleteId);
-        const upgradeList = await productsService.getProducts();
+        const delList = await ProductsService.deleteProduct(deleteId);
+        const upgradeList = await ProductsService.getProducts();
+        
+        // const delList = await productsService.deleteProduct(deleteId);
+        // const upgradeList = await productsService.getProducts();
         socket.emit("nueva lista",upgradeList);
     })
 });

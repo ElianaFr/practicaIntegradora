@@ -3,12 +3,11 @@ import { ProductManagerMongo } from "./mongo/productManagerMongo.js";
 import { CartManagerMongo } from "./mongo/cartManagerMongo.js";
 import {UsersManagerMongo} from "./mongo/usersManagerMongo.js";
 
-
-const productsService = new ProductManagerMongo();
+const productsDao = new ProductManagerMongo();
 const cartsService = new CartManagerMongo();
 const userService = new UsersManagerMongo();
 
-export { productsService, cartsService,userService };
+export { productsDao, cartsService,userService };
 
 
 

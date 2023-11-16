@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { cartsService, productsService,userService } from "../dao/index.js";
-
+import { cartsService,userService } from "../dao/index.js";
+import { ProductsService } from "../service/products.service.js";
 
 const router = Router();
 // paginas que se van a mostrar en el navegador
@@ -34,7 +34,9 @@ router.get("/", async (req,res)=>{
     if (category === 'mujer' || category === 'hombre' || category === 'unisex') {
         query.category = category;
     }    
-    const result = await productsService.getProductsPaginate(query,options);
+    const result = await ProductsService.getProductPaginate(query,options);
+    
+    // const result = await productsService.getProductsPaginate(query,options);
         // la ruta del servidor. protocolo que estamos utilizando
     const baseUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
     const data ={
@@ -59,7 +61,9 @@ router.get("/", async (req,res)=>{
 router.get("/:prodId", async(req,res)=>{
     try {
         const prodId = req.params.prodId;
-        const product = await productsService.getProductsById(prodId);
+        const product = await ProductsService.getProductsById(prodId);
+        
+        // const product = await productsService.getProductsById(prodId);
         console.log("product",product);
         res.render("productDetail",{product});
     } catch (error) {
