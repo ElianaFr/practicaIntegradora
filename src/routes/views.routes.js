@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { userService } from "../dao/index.js";
+import { UserService } from "../service/user.service.js";
+// import { userService } from "../dao/index.js";
 import { ProductsService } from "../service/products.service.js";
 import { CartsService } from "../service/carts.service.js";
 
@@ -11,7 +12,9 @@ const router = Router();
 router.get("/", async (req,res)=>{
     try {
         if (!req.user?.email) return res.render('login');
-        const user = await userService.getUserByEmail(req.user.email);
+        const user = await UserService.getUserByEmail(req.user.email);
+        
+        // const user = await userService.getUserByEmail(req.user.email);
         console.log(user);
     
         

@@ -3,7 +3,8 @@ import passport from "passport";
 import localStrategy from "passport-local";
 import { createHash, comparePass } from "../utils.js";
 import { config } from "./config.js";
-import { userService } from "../dao/index.js";
+import { UserService } from "../service/user.service.js";
+// import { userService } from "../dao/index.js";
 import GithubStrategy from "passport-github2";
 
 // conectar passport con la session
@@ -27,7 +28,9 @@ export const initializePassport = ()=>{
             try {
                 // consultar si el usuario ya estaba cargado
                 // si esta me devuelve el usuario sino undifined
-                const user = await userService.getUserByEmail(username);
+                const user = await UserService.getUserByEmail(username);
+                
+                // const user = await userService.getUserByEmail(username);
                 if(user){
                     // si el usuario existe no se puede proceder a registrarlo
                     // le paso null porque ya el mail existe y false porque no se puede autenticar
@@ -40,7 +43,9 @@ export const initializePassport = ()=>{
                     email:username,
                     password:createHash(password)
                 };
-                const userCreated = await userService.createUser(newUser);
+                const userCreated = await UserService.createUser(newUser);
+                
+                // const userCreated = await userService.createUser(newUser);
                 return done(null,userCreated);
             } catch (error) {
                 // si hay error en la autenticacion
@@ -55,7 +60,9 @@ export const initializePassport = ()=>{
         },
         async (username,password,done)=>{
             try {
-                const user = await userService.getUserByEmail(username);
+                const user = await UserService.getUserByEmail(username);
+                
+                // const user = await userService.getUserByEmail(username);
                 // validamos si el usuario esta registrado
                 if(!user){
                     // usuario no registrado
@@ -81,7 +88,9 @@ export const initializePassport = ()=>{
         async(accessToken,refreshToken,profile,done)=>{
             try {
                 console.log("profile",profile);
-                const user = await userService.getUserByEmail(profile.username);
+                const user = await UserService.getUserByEmail(profile.username);
+                
+                // const user = await userService.getUserByEmail(profile.username);
                 // el usuario ya esta registrado
                 if(user){
                     return done (null,user)
@@ -94,7 +103,9 @@ export const initializePassport = ()=>{
                     email:profile.username,
                     password:createHash(profile.id)
                 };
-                const userCreated = await userService.createUser(newUser);
+                const userCreated = await UserService.createUser(newUser);
+                
+                // const userCreated = await userService.createUser(newUser);
                 return done(null,userCreated);
             } catch (error) {
                 return done (error)
@@ -110,7 +121,9 @@ export const initializePassport = ()=>{
     passport.deserializeUser(async (id,done)=>{
         // VER SI EXISTE ELUSUARIO, traemos la info
         // quedara guardada en req.user
-        const user = await userService.getUserById(id);
+        const user = await UserService.getUserById(id);
+        
+        // const user = await userService.getUserById(id);
         done(null,user)
     });
 

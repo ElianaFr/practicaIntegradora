@@ -1,3 +1,4 @@
+
 export class SessionController {
     static redirectLogin = async(req,res)=>{
         res.render("login",{message:"Usuario registrado correctamente"})

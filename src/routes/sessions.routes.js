@@ -1,5 +1,6 @@
 import { Router } from "express";
-import {userService} from "../dao/index.js"
+// import { UserService } from "../service/user.service.js";
+// import {userService} from "../dao/index.js"
 import passport from "passport";
 import { config } from "../config/config.js"
 import { SessionController } from "../controllers/sessions.controller.js";
@@ -12,9 +13,9 @@ router.get("/fail-signup",SessionController.failSignup);
 router.post("/login", passport.authenticate("loginLocalStrategy",{failureRedirect:"/api/sessions/fail-login"}),SessionController.redirectHome);
 router.get("/fail-login",SessionController.failLogin);
 // ruta github
+router.get("/signup-github",passport.authenticate("signupGithubStrategy"));
 router.get(config.github.callbackURL, passport.authenticate("signupGithubStrategy",{
-    failureRedirect:"/api/sessions/fail-signup"
-}),SessionController.githubSignup);
+    failureRedirect:"/api/sessions/fail-signup"}),SessionController.githubSignup);
 // logout
 router.get("/logout", SessionController.logout)
 
