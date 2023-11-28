@@ -58,5 +58,8 @@ export class CartsController {
             res.status(404).json({status:"error",message:error.message});
         }
     };
+    static purchaseCart = async (req,res)=>{
+        
+    }
     
 };
