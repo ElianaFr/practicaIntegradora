@@ -2,13 +2,14 @@ import { Router } from "express";
 // import { cartsService } from "../dao/index.js";
 // import { ProductsService } from "../service/products.service.js";
 import { CartsController } from "../controllers/carts.controller.js";
+import { checkRole } from "../middlewares/auth.js";
 
 const router = Router();
 router.get("/",CartsController.getCarts);
 router.get("/:cid",CartsController.getCartById);
-router.post("/",CartsController.createCart);
-router.delete("/:cid/products/:pid", CartsController.deleteProdCart);
-router.delete("/:cid",CartsController.deleteCart);
+router.post("/",checkRole(["user"]),CartsController.createCart);
+router.delete("/:cid/products/:pid",checkRole(["user"]), CartsController.deleteProdCart);
+router.delete("/:cid",checkRole(["user"]),CartsController.deleteCart);
 router.put("/:cid/product/:pid",CartsController.updateCart);
 
 

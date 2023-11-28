@@ -2,7 +2,7 @@ import { productsDao } from "../dao/index.js";
 
 export class ProductsService {
     static createProducts = (productInfo)=>{
-        return productsDao.addProducts(productInfo);
+        return productsDao.addProduct(productInfo);
     };
     static getProducts = ()=>{
         return productsDao.getProducts();

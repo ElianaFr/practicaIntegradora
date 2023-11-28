@@ -7,6 +7,7 @@ export class SessionController {
         res.render("signup",{error:"No se pudo registrar el usuario"})
     };
     static redirectHome = async(req,res)=>{
+        // res.send("logeado")
         res.redirect("/")
     };
     static failLogin = async (req,res)=>{

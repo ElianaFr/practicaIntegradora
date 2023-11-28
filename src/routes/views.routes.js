@@ -134,6 +134,9 @@ router.get("/sessions/profile",async (req,res)=>{
         res.status(404).json({status:"error",message:error.message});
     }
 });
+router.get("/realtimeproducts"), async (req,res)=>{
+    res.render("realTimeProducts");
+}
 
 
 
