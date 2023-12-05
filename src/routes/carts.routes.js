@@ -8,11 +8,12 @@ const router = Router();
 router.get("/",CartsController.getCarts);
 router.get("/:cid",CartsController.getCartById);
 router.post("/",checkRole(["user"]),CartsController.createCart);
+router.post("/",checkRole(["user"]),CartsController.addProductToCart);
+
 router.delete("/:cid/products/:pid",checkRole(["user"]), CartsController.deleteProdCart);
 router.delete("/:cid",checkRole(["user"]),CartsController.deleteCart);
 router.put("/:cid/product/:pid",CartsController.updateCart);
 router.post("/:cid/purchase", CartsController.purchaseCart);
-
 export {router as cartsRouter}
 
 

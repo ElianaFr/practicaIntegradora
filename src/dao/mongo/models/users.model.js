@@ -17,17 +17,21 @@ const userSchema = new mongoose.Schema({
         unique:true
     },
     age:{
-        type:String,
-        
+        type:Number,
     },
     password:{
         type: String,
         require:true,
         unique:true
     },
+    cart:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"carts",
+    },
     role: {
         type: String,
         required: true,
+        enum:["user","admin"],
         default: 'user'
     }
 });

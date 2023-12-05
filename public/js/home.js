@@ -1,103 +1,70 @@
-
 const url = 'http://localhost:8080';
 
-function addToCart(pid) {
-    console.log(pid);
-    let cartId = "6525e2b9fbc880249bbc09bc";
-    if(!cartId){
-        console.log("no existe el carrito");
-        return;
-    }
-    
-    alert("el id:" , pid)
-    const options = {
+const createCart = async () => {
+    const newCartResponse = await fetch('http://localhost:8080/api/carts/', {
         method: 'POST',
-        body: JSON.stringify({quantity: 1})
-    }
-    fetch(`${url}/api/carts/${cartId}/products/${pid}`, options)
-    .then(function(response){
-        if (response.status === 200){
-            alert('Producto Agregado');
-        };
     });
+
+    const result = await newCartResponse.json();
+    currentCartId = result.data._id;
+    console.log('Nuevo carrito creado con ID:', currentCartId);
+    return currentCartId;
 };
 
+const addToCart = async (productId) => {
+    if (!currentCartId) {
+        await createCart();
+    }
 
-// function deleteProductFromCart(pid) {
-//   const options = {
-//     method: 'DELETE',
-//   }
-//   fetch(`${url}/api/carts/${cartId}/products/${pid}`, options)
-//   .then(function(response){
-//     if (response.status === 200){
-//       alert('Producto Eliminado');
-//     }
-//     location.reload();
-//   });
-// }
+    // Agrega el producto al carrito utilizando el ID del carrito actual
+    await fetch(`http://localhost:8080/api/carts/${currentCartId}/product/${productId}`, {
+        method: 'POST',
+    });
 
+    console.log('Producto agregado al carrito con ID:', currentCartId);
+    return currentCartId;
+};
 
+const deleteToCart = async (productId) => {
+    if (currentCartId && productId) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/carts/${currentCartId}/product/${productId}`, {
+                method: 'DELETE',
+            });
 
+            if (response.ok) {
+                console.log('Producto eliminado del carrito correctamente.');
+                window.location.reload(); 
+            } else {
+                console.error('Error al eliminar el producto del carrito.');
+            }
+    
+        } catch (error) {
+            console.error('Error de red o servidor al eliminar el producto del carrito:', error);
+        }
+    } else {
+        console.error('No se proporcionó un ID de carrito o ID de producto válido.');
+    }
+};
 
-
-
-
-
-
-
-
-
-
-
-
-// function addToCart(productId) {
-//     //id del carrito al que voy agregarle el producto 
+// function addToCart(pid) {
+//     console.log(pid);
 //     let cartId = "6525e2b9fbc880249bbc09bc";
 //     if(!cartId){
 //         console.log("no existe el carrito");
 //         return;
 //     }
-//     fetch (`http://localhost:8080/api/carts/${cartId}/product/${productId}`,{
+    
+//     alert("el id:" , pid)
+//     const options = {
 //         method: 'POST',
-//         headers:{
-//             'Content-Type': 'application/json'
-//         },
-//         body:JSON.stringify({
-//             cartId,
-//             productId
-//         })
-//     })
-//     .then((response) => response.json())
-//     .then((data) => {
-//     console.log('Producto agregado al carrito:', data);
-//     })
-//     .catch((error) => {
-//     console.error('Error al agregar el producto al carrito:', error);
+//         body: JSON.stringify({quantity: 1})
+//     }
+//     fetch(`${url}/api/carts/${cartId}/products/${pid}`, options)
+//     .then(function(response){
+//         if (response.status === 200){
+//             alert('Producto Agregado');
+//         };
 //     });
 // };
 
-
-
-
-
-
-// const addToCart=(productId)=>{
-//     console.log(productId)
-// }
-// const addToCart= async (productId) => {
-//     //id del carrito al que voy agregarle el producto 
-//     let cartId = "6525e2b9fbc880249bbc09bc";
-//     if(!cartId){
-//         console.log("no existe el carrito");
-//         return;
-//     }
-//     const response = await fetch (`/api/carts/${cartId}/product/${productId}`,{
-//         method: 'PUT',
-//     });
-//     if(response.status===200){
-//         alert('producto agregado al carrito');
-//         console.log('producto agregado al carrito');
-//     }else{
-//         console.log('error al agregar el producto')
-//     }
-// };

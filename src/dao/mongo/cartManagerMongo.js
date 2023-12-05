@@ -52,9 +52,12 @@ export class CartManagerMongo{
                 }else{
                     cart.products.push({productId: productId, quantity: quantity});
                 }
-                const result =await this.model.findByIdAndUpdate(cartId,cart,{new:true});
+                const result =await this.model.findByIdAndUpdate(cartId,cart,{new:true})
+                    .populate({path:"product.productId", select:'title'
+                    });
+                    return result;
             }else{
-                throw new Error("Carrito no encontrado");
+                throw new Error("No se pudo agregar al carrito");
             }
         } catch (error) {
             // por consola
