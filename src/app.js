@@ -22,6 +22,8 @@ import { viewsRouter } from "./routes/views.routes.js";
 import { sessionRouter } from "./routes/sessions.routes.js";
 // service products
 import { ProductsService } from "./service/products.service.js";
+// error
+import {errorHandler} from "./middlewares/errorHandler.js"
 
 
 // se define el puerto
@@ -84,6 +86,8 @@ app.use(viewsRouter);
 app.use("/api/products",productsRouter);
 app.use("/api/carts",cartsRouter);
 app.use("/api/sessions",sessionRouter);
+// errorHandler
+app.use(errorHandler);
 
 // socket server 
 io.on("connection",async (socket)=>{

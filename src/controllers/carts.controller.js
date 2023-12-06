@@ -73,15 +73,15 @@ export class CartsController {
         try {
                     const {cid: cartId} = req.params;
                     const cart = await CartsService.getCartById(cartId);
-                    // Verificar Stock de Cada Producto
+                    // verificar stock
                     if(cart.products.length){
                         const ticketProducts = [];
                         const rejectedProducts = [];
                         for (let i = 0; i < cart.products.length; i++) {
-                            // Dato de todo el producto
+                            // datos prod
                             const cartProduct = cart.products[i];
                             const productInfo = cartProduct.productId;
-                            // Quantity VS Stock
+                            // cantidad - stock
                             if (cartProduct.quantity <= productInfo.stock) {
                                 ticketProducts.push(cartProduct);
                                 productInfo.stock -= cartProduct.quantity;
@@ -97,7 +97,7 @@ export class CartsController {
                             total += ticketProducts[i].productId.price * ticketProducts[i].quantity;
                         };
         
-                        // Crear el ticket en BD
+                        // crear ticket en bd
                         if(ticketProducts.length >= 1){
                             const newTicket = {
                                 code: uuidv4(),
@@ -110,20 +110,20 @@ export class CartsController {
                             console.log("New Ticket", ticket);
                         };
         
-                        // Actualizar el carrito con productos rechazados
+                        // Actualizar el carrito con productos cancelados
                         if(rejectedProducts.length >= 1 && ticketProducts.length >= 1){
                             for (let i = 0; i < ticketProducts.length; i++) {
-                                // Dato de todo el producto
+                                // Datos prod
                                 let sellProduct = ticketProducts[i];
                                 let productId = sellProduct.productId._id;
-                                // Control de Stock
+                                // Stock
                                 let stock = sellProduct.productId.stock;
-                                // stock -= sellProduct.quantity;
+                                
                                 console.log("carrito",cartId);
                                 console.log("id",productId);
                                 await ProductsService.updatedProduct(productId, stock);
             
-                                // Eliminar estos productos del carrito
+                                // Eliminar 
                                 await CartsService.deleteProduct(cartId, productId)
                             };
         
@@ -132,15 +132,15 @@ export class CartsController {
                             res.json({status: "error", message: "No es posible concretar la venta, algunos productos tienen falta de stock:", rejectedProducts})
                         } else {
                             for (let i = 0; i < ticketProducts.length; i++) {
-                                // Dato de todo el producto
+                                // Datos prod
                                 let sellProduct = ticketProducts[i];
                                 let productId = sellProduct.productId._id;
-                                // Control de Stock
+                                // Stock
                                 let stock = sellProduct.productId.stock;
-                                // stock -= sellProduct.quantity;
+                                
                                 await ProductsService.updatedProduct(productId, stock);
             
-                                // Eliminar estos productos del carrito
+                                // Eliminar prod
                                 await CartsService.deleteProduct(cartId, productId)
                             };
                             console.log(`Carrito con ID ${cartId} vacio, ya que se vendieron todos los productos. \nIngresa nuevos productos`);
