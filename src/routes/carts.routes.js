@@ -7,11 +7,16 @@ import { checkRole } from "../middlewares/auth.js";
 const router = Router();
 router.get("/",CartsController.getCarts);
 router.get("/:cid",CartsController.getCartById);
-router.post("/",checkRole(["user"]),CartsController.createCart);
-router.post("/",checkRole(["user"]),CartsController.addProductToCart);
+// router.post("/",checkRole(["user"]),CartsController.createCart);
+// router.post("/",checkRole(["user"]),CartsController.addProductToCart);
+router.post("/",CartsController.createCart);
+router.post("/",CartsController.addProductToCart);
+router.delete("/:cid/products/:pid", CartsController.deleteProdCart);
+router.delete("/:cid",CartsController.deleteCart);
 
-router.delete("/:cid/products/:pid",checkRole(["user"]), CartsController.deleteProdCart);
-router.delete("/:cid",checkRole(["user"]),CartsController.deleteCart);
+
+// router.delete("/:cid/products/:pid",checkRole(["user"]), CartsController.deleteProdCart);
+// router.delete("/:cid",checkRole(["user"]),CartsController.deleteCart);
 router.put("/:cid/product/:pid",CartsController.updateCart);
 router.post("/:cid/purchase", CartsController.purchaseCart);
 export {router as cartsRouter}

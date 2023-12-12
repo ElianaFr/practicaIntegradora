@@ -1,4 +1,8 @@
 import { ProductsService } from "../service/products.service.js";
+import { EError } from "../enums/EError.js";
+import { CustomError } from "../service/errors/customError.service.js";
+import {productCreateError} from "../service/errors/productCreateError.service.js"
+
 
 export class ProductsController {
     static getProducts = async(req,res)=>{
@@ -25,6 +29,17 @@ export class ProductsController {
     static createProduct = async(req,res)=>{
         try {
             const product = req.body;
+            const {title,description,price,thumbnail,code,category,stock} = product;
+            // manejo de errores
+            if(!title || !description || !price || !thumbnail || !code || !category || !stock){
+                CustomError.createError({
+                    name: "Create product error",
+                    cause: productCreateError(req.body),
+                    message: "Datos invalidos para crear el producto",
+                    errorCode: EError.INVALID_BODY_JSON
+                });
+            }
+
             const productsList = await ProductsService.createProducts(product);
             
             // const productsList = await productsService.addProduct(product);

@@ -8,9 +8,13 @@ const router = Router();
 // route Controller
 router.get("/", ProductsController.getProducts);
 router.get("/:prodId",ProductsController.getProductsById);
-router.post("/",checkRole(["admin"]), ProductsController.createProduct);
-router.put("/:prodId",checkRole(["admin"]), ProductsController.updateProduct);
-router.delete("/:prodId",checkRole(["admin"]),ProductsController.deleteProduct);
+router.post("/", ProductsController.createProduct);
+router.put("/:prodId", ProductsController.updateProduct);
+router.delete("/:prodId",ProductsController.deleteProduct);
+
+// router.post("/",checkRole(["admin"]), ProductsController.createProduct);
+// router.put("/:prodId",checkRole(["admin"]), ProductsController.updateProduct);
+// router.delete("/:prodId",checkRole(["admin"]),ProductsController.deleteProduct);
 
 
 
